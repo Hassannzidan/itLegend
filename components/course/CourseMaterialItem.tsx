@@ -1,4 +1,4 @@
-import { Clock, User, DollarSign, BookOpen, Users, Globe, Award, type LucideIcon } from "lucide-react";
+import { Clock, User, DollarSign, LibraryBig, Users, Globe, Award, type LucideIcon } from "lucide-react";
 import type { CourseMaterial, CourseMaterialIcon } from "@/types/course";
 
 /** Resolves the serialisable icon key from the data layer to a lucide icon. */
@@ -6,7 +6,7 @@ const ICON_BY_KEY: Record<CourseMaterialIcon, LucideIcon> = {
   duration: Clock,
   instructor: User,
   price: DollarSign,
-  lessons: BookOpen,
+  lessons: LibraryBig,
   enrolled: Users,
   language: Globe,
   certificate: Award,

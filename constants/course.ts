@@ -34,12 +34,9 @@ const startingSeoCourse: Course = {
   ],
   materials: [
     { id: "duration", icon: "duration", label: "Duration", value: "3 weeks" },
-    { id: "instructor", icon: "instructor", label: "Instructor", value: "Edward Norton" },
-    { id: "price", icon: "price", label: "Price", value: "$70.00" },
-    { id: "lessons", icon: "lessons", label: "Lessons", value: "12" },
+    { id: "lessons", icon: "lessons", label: "Lessons", value: "8" },
     { id: "enrolled", icon: "enrolled", label: "Enrolled", value: "65 students" },
     { id: "language", icon: "language", label: "Language", value: "English" },
-    { id: "certificate", icon: "certificate", label: "Certificate", value: "Yes" },
   ],
   curriculum: [
     {

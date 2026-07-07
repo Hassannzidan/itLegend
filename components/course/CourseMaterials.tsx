@@ -6,27 +6,21 @@ interface CourseMaterialsProps {
 }
 
 /**
- * "Course Materials" panel. On desktop the rows flow into two columns (85%
- * wide, even rows nudged right) inside a softly shadowed card; on mobile they
- * stack full-width, matching the reference layout.
+ * "Course Materials" panel: a bordered, softly shadowed card. On desktop the
+ * rows are shown in two mirrored columns (matching the reference); on mobile a
+ * single column. The last row in each column drops its divider.
  */
 export default function CourseMaterials({ materials }: CourseMaterialsProps) {
+  const rows = materials.map((material) => (
+    <CourseMaterialItem key={material.id} material={material} />
+  ));
+
   return (
     <section className="mt-14 md:mt-16">
       <h3 className="mb-5 text-heading-lg font-semibold text-heading">Course Materials</h3>
-      <div
-        className={[
-          "shadow-soft rounded-sm px-6 py-4 md:px-9",
-          "grid grid-cols-1 md:grid-cols-2",
-          // Two-column offset trick from the reference.
-          "md:[&>*]:w-[85%] md:[&>*:nth-child(even)]:ml-[15%]",
-          // Last row loses its divider.
-          "[&>*:nth-last-child(-n+1)]:border-b-0 md:[&>*:nth-child(7)]:border-b-0 md:[&>*:nth-child(8)]:border-b-0",
-        ].join(" ")}
-      >
-        {materials.map((material) => (
-          <CourseMaterialItem key={material.id} material={material} />
-        ))}
+      <div className="shadow-soft grid grid-cols-1 gap-x-16 rounded-xl border border-border px-6 py-4 md:grid-cols-2 md:px-9">
+        <div className="[&>*:last-child]:border-b-0">{rows}</div>
+        <div className="hidden [&>*:last-child]:border-b-0 md:block">{rows}</div>
       </div>
     </section>
   );
