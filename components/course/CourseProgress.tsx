@@ -14,7 +14,7 @@ export default function CourseProgress({ value, label }: CourseProgressProps) {
 
   return (
     <div
-      className="relative mb-10 mt-20 flex items-center"
+      className="relative my-[60px] flex items-center"
       role="progressbar"
       aria-valuenow={clamped}
       aria-valuemin={0}
@@ -31,14 +31,14 @@ export default function CourseProgress({ value, label }: CourseProgressProps) {
         className="absolute bottom-1/2 -translate-x-1/2 pb-3"
         style={{ left: `${clamped}%` }}
       >
-        <span className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-progress-marker-ring text-xs text-progress-marker after:absolute after:-bottom-[10px] after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-progress-marker-ring after:content-['']">
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-progress-marker-ring text-xs text-progress-marker after:absolute after:-bottom-[14px] after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-progress-marker-ring after:content-['']">
           {label}
         </span>
       </div>
 
       {/* Percentage sits below the bar, aligned to the marker. */}
       <span
-        className="absolute top-1/2 -translate-x-1/2 pt-3 text-sm text-heading"
+        className="absolute top-1/2 -translate-x-1/2 pt-3 text-sm text-progress-marker"
         style={{ left: `${clamped}%` }}
       >
         {clamped}%
