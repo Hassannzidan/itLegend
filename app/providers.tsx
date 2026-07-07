@@ -1,22 +1,17 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { type ReactNode } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/getQueryClient";
 
 /**
- * Client-side providers. Only React Query is needed now that styling is handled
- * by Tailwind/shadcn (no CSS-in-JS runtime). One client per browser session,
- * created lazily so it stays stable across re-renders.
+ * Client-side providers. `getQueryClient()` returns the browser singleton, so
+ * the cache here is the exact same one the server-dehydrated state is hydrated
+ * into (see the route's <HydrationBoundary>) and that every `useQuery` reads —
+ * which is why prefetched data isn't re-requested after hydration.
  */
 export default function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { staleTime: 60_000, refetchOnWindowFocus: false, retry: 1 },
-        },
-      }),
-  );
+  const queryClient = getQueryClient();
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
