@@ -1,26 +1,267 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+ * Design tokens — single source of truth
+ * -----------------------------------------------------------------------------
+ * Raw values live here in :root so a future dark theme can override them in one
+ * place. The @theme block below aliases them into Tailwind's token namespaces,
+ * which is what generates the utilities (bg-*, text-*, gap-*, max-w-*, ...).
+ * Tuned to the reference course page: League Spartan type, near-black headings,
+ * soft neutral borders, a teal-green primary and the light badge palettes.
+ * ========================================================================== */
 :root {
+  --radius: 0.1875rem; /* 3px, matching the reference cards/badges */
+
+  /* Brand */
+  --primary: #41b69d;
+  --primary-foreground: #ffffff;
+
+  /* Surfaces */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #333333;
+  --card: #ffffff;
+  --card-foreground: #333333;
+  --popover: #ffffff;
+  --popover-foreground: #333333;
+  --surface-muted: #f5f9fa; /* page header band */
+  --secondary: #f5f6f7;
+  --secondary-foreground: #333333;
+  --muted: #f5f6f7;
+  --skeleton: #eceded; /* loading placeholder blocks */
+
+  /* Text ramp (light → dark) */
+  --heading: #333333;
+  --ink: #111111; /* strongest text: current crumb, form input */
+  --ink-soft: #2e2e2e; /* breadcrumb links */
+  --body: #545454; /* body text, material rows, social glyphs */
+  --body-soft: #666666; /* secondary body / breadcrumb base */
+  --body-muted: #777777; /* week descriptions */
+  --muted-foreground: #939393; /* captions, meta, placeholders */
+  --muted-soft: #999999; /* breadcrumb separators */
+
+  /* Accent */
+  --accent: #f0faf7;
+  --accent-foreground: #00796b;
+
+  /* Feedback */
+  --destructive: #d32f2f;
+  --destructive-foreground: #ffffff;
+
+  /* Borders / lines */
+  --border: #e5e5e5;
+  --border-muted: #e0e0e0; /* week cards */
+  --input: #e5e5e5;
+  --ring: #41b69d;
+
+  /* Progress bar */
+  --progress-track: #e6e6e6;
+  --progress-fill: #6abd8a;
+  --progress-marker: #485293; /* percentage text */
+  --progress-marker-ring: #c8c8c8; /* marker circle + pointer */
+
+  /* Hero image placeholder gradient (shown when the poster is unavailable) */
+  --hero-placeholder-from: #1f2937;
+  --hero-placeholder-to: #111827;
+
+  /* Badges */
+  --badge-question: #e0f7fa;
+  --badge-question-foreground: #00796b;
+  --badge-time: #ffebee;
+  --badge-time-foreground: #d32f2f;
+
+  /* Video player */
+  --player-overlay: rgb(0 0 0 / 0.45); /* dim layer behind the center play button */
+  --play-icon: #f5455c; /* play triangle */
+  --player-accent: #41b69d; /* seek / volume fill (brand primary) */
 }
 
 @theme inline {
+  /* ---- Colors ------------------------------------------------------------ */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-surface-muted: var(--surface-muted);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-skeleton: var(--skeleton);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-muted: var(--border-muted);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-heading: var(--heading);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-body: var(--body);
+  --color-body-soft: var(--body-soft);
+  --color-body-muted: var(--body-muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted-soft: var(--muted-soft);
+
+  --color-progress-track: var(--progress-track);
+  --color-progress-fill: var(--progress-fill);
+  --color-progress-marker: var(--progress-marker);
+  --color-progress-marker-ring: var(--progress-marker-ring);
+
+  --color-badge-question: var(--badge-question);
+  --color-badge-question-foreground: var(--badge-question-foreground);
+  --color-badge-time: var(--badge-time);
+  --color-badge-time-foreground: var(--badge-time-foreground);
+
+  --color-play-icon: var(--play-icon);
+  --color-player-accent: var(--player-accent);
+
+  /* ---- Radius ------------------------------------------------------------ */
+  --radius-sm: calc(var(--radius));
+  --radius-md: calc(var(--radius) + 2px);
+  --radius-lg: calc(var(--radius) + 4px);
+
+  /* ---- Typography -------------------------------------------------------- */
+  --font-sans: var(--font-league-spartan), ui-sans-serif, system-ui, sans-serif;
+
+  /* Role-based type scale (font-size only; pair with leading-* where needed).
+     Standard steps reuse Tailwind's defaults — text-xs (12), text-sm (14),
+     text-base (16), text-lg (18) — so only the design's non-standard sizes are
+     declared here. Names are kept distinct from the color tokens above so the
+     shared `text-*` prefix never collides. */
+  --text-meta: 0.9375rem; /* 15px */
+  --text-heading-sm: 1.375rem; /* 22px */
+  --text-heading-md: 1.5rem; /* 24px */
+  --text-heading-lg: 1.6875rem; /* 27px */
+  --text-display-sm: 2rem; /* 32px */
+  --text-display: 2.625rem; /* 42px */
+
+  /* ---- Layout / spacing -------------------------------------------------- */
+  --container-page: 81.25rem; /* 1300px content max-width */
+  --spacing-gutter: 4.0625rem; /* 65px content/sidebar column gap */
+  --spacing-row: 0.9375rem; /* 15px vertical row rhythm */
+  --spacing-card: 1.875rem; /* 30px card padding / large gaps */
+
+  /* ---- Breakpoints (explicit; mirrors Tailwind defaults) ----------------- */
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 96rem; /* 1536px */
+
+  /* ---- Shadows ----------------------------------------------------------- */
+  --shadow-soft: 0 0 30.5px 15px rgba(0, 0, 0, 0.0392156863);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* -------------------------------------------------------------------------
+   * Course page layout — player + body + sidebar as named grid areas.
+   * Toggling wide mode (data-wide) only swaps the grid template, so every
+   * child (crucially the <video> node) stays mounted and never reloads.
+   * Row-gap is 0 so the existing per-component margins (SocialLinks mt-6, etc.)
+   * keep the original vertical rhythm between the player and the body.
+   * ---------------------------------------------------------------------- */
+  .course-layout {
+    display: grid;
+    column-gap: var(--spacing-gutter);
+    row-gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "player"
+      "body"
+      "sidebar";
+  }
+
+  @media (min-width: 48rem) {
+    .course-layout {
+      grid-template-columns: 2fr minmax(0, 1fr);
+      grid-template-areas:
+        "player sidebar"
+        "body   sidebar";
+    }
+    .course-layout[data-wide="true"] {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "player"
+        "body"
+        "sidebar";
+    }
+  }
+
+  .course-area-player {
+    grid-area: player;
+    min-width: 0;
+  }
+  .course-area-body {
+    grid-area: body;
+    min-width: 0;
+  }
+  .course-area-sidebar {
+    grid-area: sidebar;
+    min-width: 0;
+  }
+
+  /* -------------------------------------------------------------------------
+   * Custom range inputs (seek + volume). The filled portion is supplied inline
+   * as a linear-gradient (see VideoPlayer), so no extra DOM is needed.
+   * ---------------------------------------------------------------------- */
+  .player-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.3);
+    cursor: pointer;
+  }
+  .player-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+  }
+  .player-range::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .player-range:focus-visible {
+    outline: 2px solid var(--player-accent);
+    outline-offset: 2px;
+  }
+
+  /* Native fullscreen: make the container fill the screen and centre the video
+     so our custom controls (which live inside the container) stay on top. */
+  .video-player:fullscreen,
+  .video-player:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
 }
