@@ -207,29 +207,3 @@ pnpm test:e2e             # end-to-end (boots a production build)
 ```
 
 Test infrastructure: `vitest.config.ts` maps the `@/*` alias and runs in jsdom; `vitest.setup.ts` wires Testing Library matchers and polyfills `<dialog>.showModal()`/`matchMedia`/observers that jsdom lacks.
-
-## Project decisions
-
-- **Mock behind a service seam, not scattered fixtures.** `services/courseService.ts` is the only module that reads the mock. Going live means replacing two function bodies with `api` calls; no component or hook changes. Keeps the take-home honest about where the backend boundary is.
-- **Move only the data-fetching boundary to the server.** The page is a Server Component; the interactive UI stays on the client. This buys SSR, streaming and SEO without turning the player/dialogs into (impossible) Server Components.
-- **No duplicate fetching.** `generateMetadata` and the route prefetch share a `React.cache`-wrapped loader; `staleTime` stops the client from re-requesting hydrated data.
-- **Route-level loading/error over client screens.** `loading.tsx`/`error.tsx` are the idiomatic App Router conventions and keep `CourseDetails` focused on interaction.
-- **The player uses `course.imageUrl` as its poster.** An earlier approach decoded a frame from the video via an offscreen `<video>` + canvas, which downloaded the media twice and blocked the main thread. Using the existing image is free, cacheable, and shareable (same URL as the OG image).
-- **Native `<dialog>` for modals.** Free backdrop, focus trap and Escape handling, with a small `showModal` polyfill only in tests.
-- **Design tokens in CSS.** Raw values in `:root`, aliased into Tailwind's `@theme`, so restyling / theming is one file.
-- **Type safety without escape hatches.** No `any`/`@ts-ignore`; browser capabilities absent from the DOM lib (e.g. `ScreenOrientation.lock`) are handled with runtime feature detection and user-defined type guards.
-
-## Future improvements
-
-- **Wire the service layer to a real API** through the existing axios client, and add `error.tsx`-triggering failure paths (the boundary is already in place).
-- **Adopt `next/image`** for the hero/poster and avatars (optimization, lazy loading, LCP).
-- **Prune dead scaffolding** — `CourseHero`, unused `socials`/`instructor` fields, and unreferenced `ui` primitives (`Button`, `Card`, `Separator`); drop `axios` until the API is wired, or wire it.
-- **Split `CourseMaterials` columns** so the two-column layout slices the list instead of rendering it twice.
-- **Consolidate the two modal patterns** (`Modal` vs. the `open`-prop dialogs) into one API.
-- **Throttle `timeupdate`** in the player (drive the seek bar off a ref/CSS var) to avoid re-rendering the control tree ~4×/sec during playback.
-- **Externalize copy / i18n** — the Arabic coaching messages are inline; move to a locale layer.
-- **CI** — GitHub Actions running `lint`, `test`, `build`, and Playwright on PRs; add coverage thresholds.
-
-## License
-
-No license file is currently included. Add one (e.g. `MIT`) before publishing as open source.
