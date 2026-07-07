@@ -24,7 +24,7 @@ const startingSeoCourse: Course = {
   imageUrl:
     "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
   videoUrl: "/videos/sample-lesson.mp4",
-  progress: 63,
+  progress: 68,
   progressLabel: "You",
   socials: [
     { platform: "facebook", url: "#" },
