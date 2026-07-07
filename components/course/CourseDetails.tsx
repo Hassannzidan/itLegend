@@ -46,6 +46,7 @@ export default function CourseDetails({ courseId }: CourseDetailsProps) {
           <VideoPlayer
             className="course-area-player"
             src={course.videoUrl ?? ""}
+            poster={course.imageUrl}
             title={course.title}
             isWide={isWide}
             onToggleWide={toggleWide}

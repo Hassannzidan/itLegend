@@ -10,8 +10,40 @@ interface FullscreenDocument extends Document {
   webkitFullscreenElement?: Element | null;
   webkitExitFullscreen?: () => Promise<void> | void;
 }
-interface LockableOrientation extends ScreenOrientation {
-  lock?: (orientation: "landscape" | "portrait" | "any") => Promise<void>;
+
+/**
+ * `ScreenOrientation.lock()` isn't present in this TypeScript release's DOM lib
+ * (and is unimplemented in several browsers), so we model it as a separate
+ * capability and feature-detect it. The union mirrors the official
+ * `OrientationLockType` values rather than an ad-hoc subset.
+ */
+type OrientationLockType =
+  | "any"
+  | "natural"
+  | "portrait"
+  | "landscape"
+  | "portrait-primary"
+  | "portrait-secondary"
+  | "landscape-primary"
+  | "landscape-secondary";
+
+interface OrientationLock {
+  lock(orientation: OrientationLockType): Promise<void>;
+}
+
+/**
+ * Type-safe feature detection: narrows to the lock-capable shape via a type
+ * predicate (no casts). `"lock" in orientation` adds the member for the compiler,
+ * and the `typeof` check confirms it at runtime.
+ */
+function supportsOrientationLock(
+  orientation: ScreenOrientation | undefined,
+): orientation is ScreenOrientation & OrientationLock {
+  return (
+    orientation != null &&
+    "lock" in orientation &&
+    typeof orientation.lock === "function"
+  );
 }
 
 /**
@@ -43,9 +75,11 @@ export function useFullscreen(elementRef: RefObject<HTMLElement | null>) {
   }, [elementRef]);
 
   const lockLandscape = useCallback(async () => {
-    const orientation = screen.orientation as LockableOrientation | undefined;
+    const orientation = screen.orientation;
+    // Feature-detect via the type guard; after it, `orientation.lock` is typed.
+    if (!supportsOrientationLock(orientation)) return;
     try {
-      await orientation?.lock?.("landscape");
+      await orientation.lock("landscape");
     } catch {
       /* not supported / not allowed (e.g. not on mobile) — ignore */
     }
@@ -80,7 +114,9 @@ export function useFullscreen(elementRef: RefObject<HTMLElement | null>) {
     }
     setIsFakeFullscreen(false);
     try {
-      (screen.orientation as LockableOrientation | undefined)?.unlock?.();
+      if (typeof screen.orientation?.unlock === "function") {
+        screen.orientation.unlock();
+      }
     } catch {
       /* ignore */
     }

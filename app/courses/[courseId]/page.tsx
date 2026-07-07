@@ -21,6 +21,9 @@ export async function generateMetadata({ params }: CoursePageProps): Promise<Met
 
   const title = course.title;
   const description = `Learn ${course.title} with ${course.instructor.name}. Explore the curriculum, course materials and student reviews.`;
+  // Canonical points at the course's real slug, so a fallback/alias id (which
+  // resolves to the same course) is de-duplicated to one indexable URL.
+  const canonicalPath = `/courses/${course.slug}`;
   const images = course.imageUrl
     ? [{ url: course.imageUrl, width: 1200, height: 630, alt: course.title }]
     : [];
@@ -28,11 +31,16 @@ export async function generateMetadata({ params }: CoursePageProps): Promise<Met
   return {
     title,
     description,
+    // Relative paths below are resolved against `metadataBase` (root layout)
+    // into absolute URLs.
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `/courses/${course.slug}`,
+      url: canonicalPath,
       siteName: "IT Legend",
       images,
     },
