@@ -1,12 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/constants/queryKeys";
 import { fetchCourse } from "@/services/courseService";
 import type { Course } from "@/types/course";
-
-/** Stable query keys, colocated so cache reads/writes never drift out of sync. */
-export const courseKeys = {
-  all: ["courses"] as const,
-  detail: (courseId: string) => [...courseKeys.all, courseId] as const,
-};
 
 /**
  * Loads a single course. React Query handles caching, loading and error state so
@@ -14,7 +9,7 @@ export const courseKeys = {
  */
 export function useCourse(courseId: string) {
   return useQuery<Course>({
-    queryKey: courseKeys.detail(courseId),
+    queryKey: queryKeys.courses.detail(courseId),
     queryFn: () => fetchCourse(courseId),
   });
 }

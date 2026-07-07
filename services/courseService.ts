@@ -5,8 +5,9 @@ import type { Course, CourseReview, ReviewFormValues } from "@/types/course";
  * Data-access layer for courses.
  *
  * This is the single seam between the UI and the backend. Today it resolves mock
- * data with a simulated latency; replacing the bodies with `fetch` calls is all
- * it would take to go live — no component or hook would change.
+ * data with a simulated latency; to go live, swap the bodies for calls through the
+ * shared `api` client (`@/lib/api`), e.g. `api.get<Course>(`/courses/${courseId}`)` —
+ * no component or hook would change.
  */
 
 const NETWORK_DELAY_MS = 600;

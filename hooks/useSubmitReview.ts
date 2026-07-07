@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/constants/queryKeys";
 import { submitReview } from "@/services/courseService";
 import type { Course, CourseReview, ReviewFormValues } from "@/types/course";
-import { courseKeys } from "@/hooks/useCourse";
 
 /**
  * Submits a review and optimistically prepends it to the cached course, so the
@@ -13,7 +13,7 @@ export function useSubmitReview(courseId: string) {
   return useMutation<CourseReview, Error, ReviewFormValues>({
     mutationFn: (values) => submitReview(courseId, values),
     onSuccess: (review) => {
-      queryClient.setQueryData<Course>(courseKeys.detail(courseId), (current) =>
+      queryClient.setQueryData<Course>(queryKeys.courses.detail(courseId), (current) =>
         current ? { ...current, reviews: [review, ...current.reviews] } : current,
       );
     },
