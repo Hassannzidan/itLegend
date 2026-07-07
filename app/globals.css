@@ -188,21 +188,24 @@
     grid-template-areas:
       "player"
       "body"
-      "sidebar";
+      "sidebar"
+      "comments";
   }
 
   @media (min-width: 48rem) {
     .course-layout {
       grid-template-columns: 2fr minmax(0, 1fr);
       grid-template-areas:
-        "player sidebar"
-        "body   sidebar";
+        "player   sidebar"
+        "body     sidebar"
+        "comments sidebar";
     }
     .course-layout[data-wide="true"] {
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
         "player"
         "body"
+        "comments"
         "sidebar";
     }
   }
@@ -217,6 +220,10 @@
   }
   .course-area-sidebar {
     grid-area: sidebar;
+    min-width: 0;
+  }
+  .course-area-comments {
+    grid-area: comments;
     min-width: 0;
   }
 

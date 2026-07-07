@@ -72,12 +72,17 @@ export default function CourseDetails({ courseId }: CourseDetailsProps) {
             <div className="course-area-body">
               <SocialLinks links={course.socials} />
               <CourseMaterials materials={course.materials} />
-              <CourseComments courseId={course.id} reviews={course.reviews} />
             </div>
 
-            {/* Sidebar (grid area: sidebar) */}
+            {/* Sidebar (grid area: sidebar) — on mobile this sits directly under
+                Course Materials and above the comments. */}
             <div className={cn("course-area-sidebar mt-14", isWide ? "md:mt-14" : "md:mt-0")}>
               <CourseSidebar course={course} />
+            </div>
+
+            {/* Comments (grid area: comments) */}
+            <div className="course-area-comments">
+              <CourseComments courseId={course.id} reviews={course.reviews} />
             </div>
           </div>
         )}
