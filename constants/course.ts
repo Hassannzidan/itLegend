@@ -49,7 +49,7 @@ const startingSeoCourse: Course = {
         { id: "l3", title: "Course Overview", quiz: { questions: 0, minutes: 10 } },
         { id: "l4", title: "Course Exercise / Reference Files" },
         { id: "l5", title: "Code Editor Installation (Optional if you have one)" },
-        { id: "l6", title: "Embedding PHP in HTML" },
+        { id: "l6", title: "Embedding PHP in HTML", exam: true },
       ],
     },
     {

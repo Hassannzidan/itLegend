@@ -49,6 +49,8 @@ export interface Lesson {
   id: string;
   title: string;
   quiz?: LessonQuiz;
+  /** When true the lesson opens the timed exam dialog instead of a PDF preview. */
+  exam?: boolean;
 }
 
 export interface CourseWeek {
