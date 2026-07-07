@@ -73,6 +73,14 @@ const startingSeoCourse: Course = {
   ],
 };
 
+/** Breadcrumb trail for the Course Details route. Shared by the page, its
+ *  loading fallback and its error boundary so the shell never shifts. */
+export const COURSE_BREADCRUMBS: { label: string; href?: string }[] = [
+  { label: "Home", href: "/" },
+  { label: "Courses", href: "/courses" },
+  { label: "Course Details" },
+];
+
 /** All available courses, keyed by their route id (`/courses/[courseId]`). */
 export const MOCK_COURSES: Readonly<Record<string, Course>> = {
   [startingSeoCourse.id]: startingSeoCourse,

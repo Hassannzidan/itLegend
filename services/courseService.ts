@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { DEFAULT_COURSE, MOCK_COURSES } from "@/constants/course";
 import type { Course, CourseReview, ReviewFormValues } from "@/types/course";
 
@@ -19,6 +20,14 @@ export async function fetchCourse(courseId: string): Promise<Course> {
   await delay(NETWORK_DELAY_MS);
   return MOCK_COURSES[courseId] ?? DEFAULT_COURSE;
 }
+
+/**
+ * Request-memoized server loader. Wrapping `fetchCourse` in React's `cache`
+ * dedupes it within a single server request, so `generateMetadata` and the
+ * route's `prefetchQuery` share one execution instead of fetching twice.
+ * Server-only — client hooks keep calling `fetchCourse` directly.
+ */
+export const getCourse = cache(fetchCourse);
 
 /** Persist a new review. Returns the created review so the cache can update. */
 export async function submitReview(
