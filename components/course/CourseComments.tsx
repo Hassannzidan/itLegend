@@ -6,6 +6,9 @@ import ReviewForm from "@/components/course/ReviewForm";
 import { useSubmitReview } from "@/hooks/useSubmitReview";
 import type { CourseReview, ReviewFormValues } from "@/types/course";
 
+/** Anchor id used by the section nav to scroll to the comments. */
+export const COMMENTS_SECTION_ID = "course-comments";
+
 interface CourseCommentsProps {
   courseId: string;
   reviews: CourseReview[];
@@ -34,7 +37,11 @@ export default function CourseComments({ courseId, reviews }: CourseCommentsProp
   };
 
   return (
-    <section className="mt-14 md:mt-16" aria-label="Comments">
+    <section
+      id={COMMENTS_SECTION_ID}
+      className="mt-14 scroll-mt-24 md:mt-16"
+      aria-label="Comments"
+    >
       <h3 className="mb-5 text-heading-lg font-semibold text-heading">Comments</h3>
 
       {reviews.length === 0 ? (

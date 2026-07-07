@@ -177,7 +177,7 @@
    * Course page layout — player + body + sidebar as named grid areas.
    * Toggling wide mode (data-wide) only swaps the grid template, so every
    * child (crucially the <video> node) stays mounted and never reloads.
-   * Row-gap is 0 so the existing per-component margins (SocialLinks mt-6, etc.)
+   * Row-gap is 0 so the existing per-component margins (CourseSectionNav mt-6, etc.)
    * keep the original vertical rhythm between the player and the body.
    * ---------------------------------------------------------------------- */
   .course-layout {

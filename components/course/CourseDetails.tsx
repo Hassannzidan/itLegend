@@ -2,7 +2,7 @@
 
 import CoursePageHeader from "@/components/course/CoursePageHeader";
 import VideoPlayer from "@/components/course/VideoPlayer";
-import SocialLinks from "@/components/course/SocialLinks";
+import CourseSectionNav from "@/components/course/CourseSectionNav";
 import CourseMaterials from "@/components/course/CourseMaterials";
 import CourseComments from "@/components/course/CourseComments";
 import CourseSidebar from "@/components/course/CourseSidebar";
@@ -70,7 +70,7 @@ export default function CourseDetails({ courseId }: CourseDetailsProps) {
 
             {/* Main content (grid area: body) */}
             <div className="course-area-body">
-              <SocialLinks links={course.socials} />
+              <CourseSectionNav course={course} />
               <CourseMaterials materials={course.materials} />
             </div>
 
