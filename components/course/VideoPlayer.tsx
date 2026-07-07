@@ -10,8 +10,6 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 interface VideoPlayerProps {
   /** Local video source (e.g. /videos/sample-lesson.mp4). */
   src: string;
-  /** Poster frame shown before playback. */
-  poster?: string;
   title?: string;
   /** Desktop "wide/theatre" state — owned by the page layout. */
   isWide?: boolean;
@@ -78,7 +76,6 @@ const IconWide = ({ active }: { active: boolean }) => (
  */
 export default function VideoPlayer({
   src,
-  poster,
   title,
   isWide = false,
   onToggleWide,
@@ -96,7 +93,56 @@ export default function VideoPlayer({
 
   const [playerHeight, setPlayerHeight] = useState(0);
   const [speedOpen, setSpeedOpen] = useState(false);
+  const [posterUrl, setPosterUrl] = useState<string>();
   const speedRef = useRef<HTMLDivElement>(null);
+
+  // Derive the still shown before playback from the video itself: grab the frame
+  // at 0:57 via an offscreen <video> + canvas so the real player stays at time 0.
+  useEffect(() => {
+    if (!src) return;
+    const POSTER_TIME = 57; // seconds (0:57)
+    let cancelled = false;
+
+    const v = document.createElement("video");
+    v.crossOrigin = "anonymous";
+    v.muted = true;
+    v.preload = "auto";
+    v.src = src;
+
+    const cleanup = () => {
+      v.removeEventListener("loadedmetadata", onLoaded);
+      v.removeEventListener("seeked", onSeeked);
+      v.removeAttribute("src");
+      v.load();
+    };
+    const onLoaded = () => {
+      v.currentTime = Math.min(POSTER_TIME, v.duration || POSTER_TIME);
+    };
+    const onSeeked = () => {
+      if (!cancelled && v.videoWidth) {
+        const canvas = document.createElement("canvas");
+        canvas.width = v.videoWidth;
+        canvas.height = v.videoHeight;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+          try {
+            setPosterUrl(canvas.toDataURL("image/jpeg", 0.85));
+          } catch {
+            /* cross-origin taint — leave poster unset */
+          }
+        }
+      }
+      cleanup();
+    };
+
+    v.addEventListener("loadedmetadata", onLoaded);
+    v.addEventListener("seeked", onSeeked);
+    return () => {
+      cancelled = true;
+      cleanup();
+    };
+  }, [src]);
 
   // Keep a placeholder height so the page doesn't jump when the player pins.
   useEffect(() => {
@@ -194,7 +240,7 @@ export default function VideoPlayer({
         <video
           ref={videoRef}
           src={src}
-          poster={poster}
+          poster={posterUrl}
           playsInline
           preload="metadata"
           onClick={player.togglePlay}
